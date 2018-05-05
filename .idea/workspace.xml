@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9adb1020-3113-424e-a9dd-eaa8d4eff2b1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/hmm.py" afterDir="false" />
@@ -19,10 +18,11 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="259" column="28" selection-start-line="259" selection-start-column="28" selection-end-line="259" selection-end-column="28" />
+            <state relative-caret-position="352">
+              <caret line="415" column="26" lean-forward="true" selection-start-line="415" selection-start-column="26" selection-end-line="415" selection-end-column="26" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
+                <element signature="e#2827#4335#0" />
               </folding>
             </state>
           </provider>
@@ -53,7 +53,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>emmision</find>
       <find>nbd_mle</find>
       <find>alphas =</find>
       <find>assert (a[k</find>
@@ -83,6 +82,7 @@
       <find>x</find>
       <find>maximise_theta</find>
       <find>print(</find>
+      <find>defaultdi</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -237,10 +237,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="259" column="28" selection-start-line="259" selection-start-column="28" selection-end-line="259" selection-end-column="28" />
+        <state relative-caret-position="352">
+          <caret line="415" column="26" lean-forward="true" selection-start-line="415" selection-start-column="26" selection-end-line="415" selection-end-column="26" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#2827#4335#0" />
           </folding>
         </state>
       </provider>

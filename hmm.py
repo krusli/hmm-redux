@@ -1,5 +1,6 @@
 from pprint import pprint
 from multiprocessing import Pool, cpu_count
+from collections import defaultdict
 
 import numpy as np
 from scipy.misc import comb
@@ -403,14 +404,33 @@ class HMM:
 
         return delta
 
+    def item_rank(self, u, alphas, theta):
+        """
+        Returns a list of relevant items for a user in order of relevance.
+        """
+        # calculate distribution over the states for the user at time t+1
+        p_t_plus_1 = []
+        for k in range(self.n_states):
+            total = 0
+            for l in range(self.n_states):
+                total += alphas[u][-1][k] * self.A[l][k]
+            p_t_plus_1.append(total)
 
-if __name__ == "__main__":
-    hmm = HMM(15, 3, 100)
-    observation_seqs = [
-        [[0, 3, 2, 7], [1, 4], [2, 5, 6], [0, 0, 2, 3]],  # user 1, only tech
-        #     [[0, 1, 2, 8, 9, 2], [3, 1, 4, 1, 5, 9], [8, 10, 12, 7], [1, 2, 1, 1]], # user 2, mixture of tech and fashion. Heavy user.
-        #     [[0, 1], [2], [3], []],  # user 3, light user, mainly tech
-        #     [[13], [14], [], [0, 1]],  # user 4, power tools, also browsed tech
-        #     [[8, 9, 10], [9, 10, 11], [10, 11, 12], [8, 8, 9]]  # only fashion
-    ]
-    hmm.baum_welch(observation_seqs)
+        item_rank = defaultdict(float)
+        for i in range(len(theta)):  # for each item
+            item_rank[i] = -sum(p_t_plus_1[k] * (1 + self.b[k] * theta[i][k]) ** (-self.a[k])
+                                for k in range(self.n_states))
+
+        return sorted(item_rank, key=item_rank.__getitem__, reverse=True)
+
+
+# if __name__ == "__main__":
+#     hmm = HMM(15, 3, 100)
+#     observation_seqs = [
+#         [[0, 3, 2, 7], [1, 4], [2, 5, 6], [0, 0, 2, 3]],  # user 1, only tech
+#         [[0, 1, 2, 8, 9, 2], [3, 1, 4, 1, 5, 9], [8, 10, 12, 7], [1, 2, 1, 1]], # user 2, mixture of tech and fashion. Heavy user.
+#         [[0, 1], [2], [3], []],  # user 3, light user, mainly tech
+#         [[13], [14], [], [0, 1]],  # user 4, power tools, also browsed tech
+#         [[8, 9, 10], [9, 10, 11], [10, 11, 12], [8, 8, 9]]  # only fashion
+#     ]
+#     hmm.baum_welch(observation_seqs)
