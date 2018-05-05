@@ -1,3 +1,4 @@
 [
-  "test_hmm.py::test_init"
+  "test_hmm.py::test_init",
+  "test_hmm.py::test_NBD"
 ]

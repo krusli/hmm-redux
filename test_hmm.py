@@ -1,4 +1,5 @@
-import numpy as np
+# import numpy as np
+from numpy.testing import assert_almost_equal
 from hmm import HMM
 
 def test_init():
@@ -6,11 +7,11 @@ def test_init():
 
     # assertions
     # initial state probabilities must sum to 1
-    np.testing.assert_almost_equal(sum(hmm.A), 1)
+    assert_almost_equal(sum(hmm.A), 1)
 
     # transition probabilities from a state i to all states in the next time step (including itself) must sum to 1
     for pi_i in hmm.pi:
-        np.testing.assert_almost_equal(sum(pi_i), 1)
+        assert_almost_equal(sum(pi_i), 1)
 
     # NBD params a and b should be initialised to random parameters (should exist)
     hmm.a
@@ -18,4 +19,8 @@ def test_init():
 
     # theta_k: multinomial emission probability: *which* item is/will be selected by the user
     for theta_k in hmm.theta:
-        np.testing.assert_almost_equal(sum(theta_k), 1)
+        assert_almost_equal(sum(theta_k), 1)
+
+def test_NBD():
+    p = HMM.nbinom(5, 1, 1)
+    assert_almost_equal(p, 0.015625)
