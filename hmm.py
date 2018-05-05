@@ -1,4 +1,6 @@
+from pprint import pprint
 from multiprocessing import Pool, cpu_count
+
 import numpy as np
 from scipy.misc import comb
 from scipy import stats
@@ -32,8 +34,9 @@ class HMM:
 
         # emission probabilities
         # NBD (negative binomial distribution) params; NBD models the no of items the user selects
-        self.a = np.random.random(n_states)
-        self.b = np.random.random(n_states)
+        # TODO 20
+        self.a = np.random.random(n_states) * 20
+        self.b = np.random.random(n_states) * 20
 
         # theta (multinomial) models which items the user selects
         self.theta = np.zeros(shape=(n_states, n_items))
@@ -63,6 +66,7 @@ class HMM:
 
         # get the joint pdf
         if x > 0:
+            print(HMM.nbinom(x, a[k], b[k]), multinomial.pmf(item_counts))
             return HMM.nbinom(x, a[k], b[k]) * multinomial.pmf(item_counts)
         else:
             # if user does not look at any items, probability of looking at 0 items
@@ -108,7 +112,9 @@ class HMM:
                 HMM.emission_prob(theta, a, b, k, observation_seq[t])
                 for k in range(n_states)
             ])
-            alphas[t, :] = np.dot(np.dot(emissions, np.transpose(A)), alphas[t-1, :])  # TODO check no transpose
+            print(emissions)
+            alphas[t, :] = np.dot(np.dot(emissions, np.transpose(A)), alphas[t-1, :])
+
             scaling_factor = alphas[t, :].sum()
             if scaling_factor:
                 alphas[t, :] /= scaling_factor
@@ -155,8 +161,6 @@ class HMM:
         # TODO no iteration
         # N_ITERATIONS = 1
 
-        print('baum_welch')
-
         # constant values (for M-stage)
         n_users = len(observation_seqs)
         T = len(observation_seqs[0])
@@ -173,13 +177,25 @@ class HMM:
         self.expectation(observation_seqs)
 
     def expectation(self, observation_seqs):
-        print('expectation')
         params = []
         for seq in observation_seqs:
             params.append((self.n_states, self.a, self.b, self.theta, self.pi, self.A, seq))
         # results = self.pool.map(HMM.forward_backward, params)
         results = list(map(HMM.forward_backward, params))
-        print(results)
+        # print(results)
+
+        for alphas, scaling_factors, betas in results:
+            print('Alphas')
+            pprint(alphas)
+            print()
+            print('Scaling factors')
+            pprint(scaling_factors)
+            print()
+            print('Betas')
+            pprint(betas)
+
+            break
+
 
         return results
 
