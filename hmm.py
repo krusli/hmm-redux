@@ -16,7 +16,7 @@ class HMM:
         - emission/observation model from latent class memberships
         """
         if not pool:
-            pool = Pool(cpu_count())
+            self.pool = Pool(cpu_count())
 
         prior_params = alpha * np.ones(shape=n_states) / n_states
 
@@ -155,6 +155,8 @@ class HMM:
         # TODO no iteration
         # N_ITERATIONS = 1
 
+        print('baum_welch')
+
         # constant values (for M-stage)
         n_users = len(observation_seqs)
         T = len(observation_seqs[0])
@@ -171,6 +173,7 @@ class HMM:
         self.expectation(observation_seqs)
 
     def expectation(self, observation_seqs):
+        print('expectation')
         params = []
         for seq in observation_seqs:
             params.append((self.n_states, self.a, self.b, self.theta, self.pi, self.A, seq))
@@ -184,6 +187,3 @@ class HMM:
 
         pass
 
-    def baum_welch(self, observation_seqs):
-        pass
-        # TODO call E then M
