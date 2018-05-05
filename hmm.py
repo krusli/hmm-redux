@@ -66,7 +66,6 @@ class HMM:
 
         # get the joint pdf
         if x > 0:
-            print(HMM.nbinom(x, a[k], b[k]), multinomial.pmf(item_counts))
             return HMM.nbinom(x, a[k], b[k]) * multinomial.pmf(item_counts)
         else:
             # if user does not look at any items, probability of looking at 0 items
@@ -112,7 +111,6 @@ class HMM:
                 HMM.emission_prob(theta, a, b, k, observation_seq[t])
                 for k in range(n_states)
             ])
-            print(emissions)
             alphas[t, :] = np.dot(np.dot(emissions, np.transpose(A)), alphas[t-1, :])
 
             scaling_factor = alphas[t, :].sum()
@@ -157,8 +155,36 @@ class HMM:
 
         return alphas, scaling_factors, betas
 
+    @staticmethod
+    def gamma(params):
+        alpha, beta = params
+        return alpha * beta
+
+    @staticmethod
+    def xi(params):
+        alpha, beta, A, scaling_factors, T, n_states, a, b, theta, observation_seq = params
+
+        xi = np.zeros(shape=(T-1, n_states, n_states))
+        for t in range(T-1):
+            emissions = np.array([HMM.emission_prob(theta, a, b, k, observation_seq[t+1]) for k in range(n_states)])
+            for i in range(n_states):
+                xi[t][i] = np.multiply(
+                    np.multiply(
+                        np.multiply(
+                            alpha[t][i], A[i]
+                        ), emissions
+                    ), beta[t+1]
+                )
+
+            # t+2: implementation detail
+            if scaling_factors[t+2] != 0:
+                xi[t] /= scaling_factors[t+2]
+
+        return xi
+
     def baum_welch(self, observation_seqs):
         # TODO no iteration
+        # TODO cache emission probs
         # N_ITERATIONS = 1
 
         # constant values (for M-stage)
@@ -174,32 +200,48 @@ class HMM:
             for u in range(n_users):
                 total_counts[t][u] = len(observation_seqs[u][t])
 
-        self.expectation(observation_seqs)
+        alphas, betas, gammas, xis = self.expectation(observation_seqs)
+        # self.maximisation(alphas, scaling_factors, betas, obsv_counts, total_counts)
 
     def expectation(self, observation_seqs):
+        T = len(observation_seqs[0])
+
         params = []
         for seq in observation_seqs:
             params.append((self.n_states, self.a, self.b, self.theta, self.pi, self.A, seq))
         # results = self.pool.map(HMM.forward_backward, params)
-        results = list(map(HMM.forward_backward, params))
-        # print(results)
+        results = map(HMM.forward_backward, params)
 
-        for alphas, scaling_factors, betas in results:
-            print('Alphas')
-            pprint(alphas)
-            print()
-            print('Scaling factors')
-            pprint(scaling_factors)
-            print()
-            print('Betas')
-            pprint(betas)
+        alphas = []
+        scaling_factors = []
+        betas = []
 
-            break
+        for alphas_, scaling_factors_, betas_ in results:
+            alphas.append(alphas_)
+            scaling_factors.append(scaling_factors_)
+            betas.append(betas_)
 
+        """
+        Expecation
+        ----------
+        Calculate gammas and xis, using alphas, betas and scaling probs.
+        """
+        # calculate gammas
+        params = []
+        for u in range(len(observation_seqs)):
+            params.append(alphas[u], betas[u])
+        gammas = map(HMM.gamma, params)
 
-        return results
+        # calculate xis
+        params = []
+        for u in range(len(observation_seqs)):
+            params.append((alphas[u], betas[u], self.A, scaling_factors[u], T, self.n_states, self.a, self.b, self.theta, observation_seqs[u]))
+        xis = map(HMM.xi, params)
 
-    def maximisation(self):
+        return alphas, betas, gammas, xis
+
+    # TODO non-final signature
+    def maximisation(self, alphas, scaling_factors, betas, observation_counts, total_counts):
         # M
 
         pass

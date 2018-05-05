@@ -17,8 +17,8 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="36" column="17" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+            <state relative-caret-position="7">
+              <caret line="205" column="8" selection-start-line="205" selection-start-column="8" selection-end-line="205" selection-end-column="8" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -46,8 +46,10 @@
       <find>self.pool.map</find>
       <find>item_counts</find>
       <find>emissions</find>
-      <find>print(</find>
       <find>nbinom</find>
+      <find>print</find>
+      <find>print(</find>
+      <find>print('Alphas</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -141,7 +143,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="2" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -164,8 +166,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="36" column="17" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+        <state relative-caret-position="7">
+          <caret line="205" column="8" selection-start-line="205" selection-start-column="8" selection-end-line="205" selection-end-column="8" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>
