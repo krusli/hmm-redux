@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9adb1020-3113-424e-a9dd-eaa8d4eff2b1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/hmm.py" afterDir="false" />
     </list>
@@ -18,8 +17,8 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="415" column="26" lean-forward="true" selection-start-line="415" selection-start-column="26" selection-end-line="415" selection-end-column="26" />
+            <state relative-caret-position="459">
+              <caret line="419" column="32" selection-start-line="419" selection-start-column="32" selection-end-line="419" selection-end-column="32" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
                 <element signature="e#2827#4335#0" />
@@ -53,9 +52,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>nbd_mle</find>
-      <find>alphas =</find>
-      <find>assert (a[k</find>
       <find>NBD_MLE</find>
       <find>theta =</find>
       <find>update_thet</find>
@@ -83,6 +79,9 @@
       <find>maximise_theta</find>
       <find>print(</find>
       <find>defaultdi</find>
+      <find>forward</find>
+      <find>u</find>
+      <find>item_rank</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -237,8 +236,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="415" column="26" lean-forward="true" selection-start-line="415" selection-start-column="26" selection-end-line="415" selection-end-column="26" />
+        <state relative-caret-position="459">
+          <caret line="419" column="32" selection-start-line="419" selection-start-column="32" selection-end-line="419" selection-end-column="32" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
             <element signature="e#2827#4335#0" />

@@ -404,7 +404,7 @@ class HMM:
 
         return delta
 
-    def item_rank(self, u, alphas, theta):
+    def item_rank(self, alphas):
         """
         Returns a list of relevant items for a user in order of relevance.
         """
@@ -413,12 +413,12 @@ class HMM:
         for k in range(self.n_states):
             total = 0
             for l in range(self.n_states):
-                total += alphas[u][-1][k] * self.A[l][k]
+                total += alphas[-1][k] * self.A[l][k]
             p_t_plus_1.append(total)
 
         item_rank = defaultdict(float)
-        for i in range(len(theta)):  # for each item
-            item_rank[i] = -sum(p_t_plus_1[k] * (1 + self.b[k] * theta[i][k]) ** (-self.a[k])
+        for i in range(len(self.theta)):  # for each item
+            item_rank[i] = -sum(p_t_plus_1[k] * (1 + self.b[k] * self.theta[i][k]) ** (-self.a[k])
                                 for k in range(self.n_states))
 
         return sorted(item_rank, key=item_rank.__getitem__, reverse=True)
