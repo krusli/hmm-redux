@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9adb1020-3113-424e-a9dd-eaa8d4eff2b1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.pytest_cache/v/cache/nodeids" beforeDir="false" afterPath="$PROJECT_DIR$/.pytest_cache/v/cache/nodeids" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/hmm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_hmm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,14 +19,20 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="288" column="71" selection-start-line="288" selection-start-column="71" selection-end-line="288" selection-end-column="71" />
+            <state relative-caret-position="141">
+              <caret line="259" column="28" selection-start-line="259" selection-start-column="28" selection-end-line="259" selection-end-column="28" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
-                <element signature="e#7299#8459#0" />
-                <element signature="e#12480#12511#0" />
-                <element signature="e#12990#15044#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="_multivariate.py" pinned="false" current-in-tab="false">
+        <entry file="file:///anaconda3/lib/python3.6/site-packages/scipy/stats/_multivariate.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="2785" column="8" selection-start-line="2785" selection-start-column="8" selection-end-line="2785" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -47,21 +53,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.pool</find>
-      <find>self.pool.map</find>
-      <find>item_counts</find>
-      <find>emissions</find>
-      <find>nbinom</find>
-      <find>print</find>
+      <find>emmision</find>
+      <find>nbd_mle</find>
+      <find>alphas =</find>
+      <find>assert (a[k</find>
+      <find>NBD_MLE</find>
+      <find>theta =</find>
+      <find>update_thet</find>
+      <find>theta = np</find>
+      <find>theta</find>
+      <find>np.swapaxes(</find>
+      <find>gammas</find>
+      <find>maximise_theta,</find>
+      <find>np.swapaxes(gammas(</find>
+      <find>observation_counts =</find>
+      <find>gammas = list(</find>
+      <find>param</find>
+      <find>np.isfini</find>
+      <find>gammas =</find>
+      <find>gammas[u][t]</find>
+      <find>observation_counts[t</find>
+      <find>observation_counts[t][i</find>
+      <find>calculate_gamma</find>
+      <find>maximise_gam</find>
+      <find>gamma</find>
+      <find>map(gamma,</find>
+      <find>observation_counts</find>
+      <find>def gamma</find>
+      <find>x</find>
+      <find>maximise_theta</find>
       <find>print(</find>
-      <find>print('Alphas</find>
-      <find>params.appe</find>
-      <find>n_items =</find>
-      <find>self</find>
-      <find>Minka 2002</find>
-      <find>counts</find>
-      <find>observation_seqs</find>
-      <find>counts =</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -114,6 +135,31 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="hmm" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="hmm-redux" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hmm.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.hmm" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -128,18 +174,18 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="877" extended-state="6" />
+    <frame x="1" y="23" width="1440" height="877" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.63013697" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Python Console" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.44333747" />
       <window_info id="Favorites" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -155,8 +201,14 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="17" />
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="gammas_" />
+        <watch expression="observation_counts" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file:///anaconda3/lib/python3.6/site-packages/numpy/random/__init__.py">
@@ -176,15 +228,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///anaconda3/lib/python3.6/site-packages/scipy/stats/_multivariate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="2785" column="8" selection-start-line="2785" selection-start-column="8" selection-end-line="2785" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="288" column="71" selection-start-line="288" selection-start-column="71" selection-end-line="288" selection-end-column="71" />
+        <state relative-caret-position="141">
+          <caret line="259" column="28" selection-start-line="259" selection-start-column="28" selection-end-line="259" selection-end-column="28" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
-            <element signature="e#7299#8459#0" />
-            <element signature="e#12480#12511#0" />
-            <element signature="e#12990#15044#0" />
           </folding>
         </state>
       </provider>
