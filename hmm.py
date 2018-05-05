@@ -3,14 +3,14 @@ from multiprocessing import Pool, cpu_count
 
 import numpy as np
 from scipy.misc import comb
-from scipy import stats
+from scipy import stats, special
 
 class HMM:
-    def __init__(self, n_items, n_states, alpha=100):
+    def __init__(self, n_items, n_states, ALPHA=100):
         """
         :param n_items: no of items (I) in the dataset
         :param n_states: no of hidden states (K)
-        :param alpha: weight of evidence from each prior (used to initialise model)
+        :param ALPHA: weight of evidence from each prior (used to initialise model)
 
         Init:
         - starting probability (pi) <- Dirichlet prior a1 to aK
@@ -19,7 +19,8 @@ class HMM:
         """
         self.pool = Pool(cpu_count())
 
-        prior_params = alpha * np.ones(shape=n_states) / n_states
+        self.ALPHA = ALPHA  # ALPHA_K. Prior for states
+        prior_params = ALPHA * np.ones(shape=n_states) / n_states
 
         self.n_states = n_states
         self.n_items = n_items
@@ -40,9 +41,9 @@ class HMM:
 
         # theta (multinomial) models which items the user selects
         self.theta = np.zeros(shape=(n_states, n_items))
+        prior_params = ALPHA * np.ones(shape=n_items) / n_states
         for i in range(n_states):
-            self.theta[i] = np.random.random(n_items)
-            self.theta[i] /= sum(self.theta[i])  # normalise to sum to 1
+            self.theta[i] = np.random.dirichlet(prior_params)
         self.theta = np.transpose(self.theta)
 
     @staticmethod
@@ -182,6 +183,91 @@ class HMM:
 
         return xi
 
+    @staticmethod
+    def maximise_theta(params):
+        gammas, obsv_counts, total_counts, alpha, n_states, T = params
+
+        gammas_ = np.swapaxes(gammas, 0, 2)  # gammas[k][t][u]
+        numerator = 0
+        denominator = 0
+        for t in range(T):
+            # gammas for all users (dot) counts for all users
+            numerator += (gammas_[k][t] * obsv_counts[t][i]).sum()
+            denominator += (gammas_[k][t] * total_counts[t]).sum()
+        numerator += alpha / n_states - 1
+        denominator += alpha - n_states
+
+        assert (numerator / denominator >= 0)
+        theta_ik = numerator / denominator
+
+        return i, k, theta_ik
+
+    @staticmethod
+    def NBD_MLE(a, b, gammas, observation_seqs):
+        """
+        Maximises a negative binomial distribution.
+        See Minka 2002, section 2.1.
+        """
+        counts = [[0 for _ in u] for u in observation_seqs]
+
+        log = np.log
+        polygamma = special.polygamma
+
+        T = len(observation_seqs[0])
+        for u in range(len(counts)):  # count number of items selected for each user at each time
+            for t in range(T):
+                counts[u][t] = len(observation_seqs[u][t])
+
+        average_counts = []
+        for k in range(len(a)):  # K states
+            numerator = 0
+            denominator = 0
+            for u in range(len(counts)):  # for each user
+                for t in range(T):
+                    # gammas: "mixing weights"
+                    numerator += gammas[u][t][k] * ((counts[u][t] + a[k]) * b[k] / (b[k] + 1))
+                    denominator += gammas[u][t][k]  # "number of observations"
+            average_counts.append(numerator / denominator)
+
+        average_log_counts = []
+        for k in range(len(a)):
+            numerator = 0
+            denominator = 0
+            for u in range(len(counts)):  # for each user
+                for t in range(T):
+                    if counts[u][t] == 0:
+                        numerator = 0
+                    else:
+                        numerator += gammas[u][t][k] * (polygamma(0, counts[u][t] + a[k]) + log(b[k] / (b[k] + 1)))
+                    denominator += gammas[u][t][k]
+            average_log_counts.append(numerator / denominator)
+
+        for k in range(len(a)):
+            b[k] = average_counts[k] / a[k]  # Minka 2002 (3)
+            if average_counts != 0:
+                a[k] = 0.5 / (log(average_counts[k]) - average_log_counts[k])
+
+            # starting point
+            if average_counts != 0:
+                a[k] = 0.5 / (log(average_counts[k]) - average_log_counts[k])
+
+            for i in range(4):  # NOTE: *should* converge in four iterations
+                # TODO check
+                # print(average_counts[k], a[k])
+                if average_counts[k] > 0 and a[k] > 0:
+                    # f = sum(sum(gammas[u][t][k] * (polygamma(0, a[k] + average_counts[k]) - polygamma(0, a[k]) - \
+                    #       log(average_counts[k]/a[k] + 1)) for t in range(T)) for u in range(no_of_users))
+                    # df = sum(sum(gammas[u][t][k] * (polygamma(1, a[k] + average_counts[k]) - polygamma(1, a[k]) - \
+                    #       1/(average_counts[k] + a[k]) + 1/a[k]) for t in range(t)) for u in range(no_of_users))
+                    a_new_inv = 1 / a[k] + (
+                                average_log_counts[k] - log(average_counts[k]) + log(a[k]) - polygamma(0, a[k])) / (
+                                            a[k] ** 2 * (1 / a[k] - polygamma(1, a[k])))
+                    a[k] = 1 / a_new_inv
+
+                assert (a[k] >= 0)
+
+        return a, b
+
     def baum_welch(self, observation_seqs):
         # TODO no iteration
         # TODO cache emission probs
@@ -191,17 +277,18 @@ class HMM:
         n_users = len(observation_seqs)
         T = len(observation_seqs[0])
 
-        obsv_counts = np.zeros(shape=(T, self.n_items, n_users))
+        observation_counts = np.zeros(shape=(T, self.n_items, n_users))
         total_counts = np.zeros(shape=(T, n_users))
         for t in range(T):
             for i in range(self.n_items):
                 for u in range(n_users):
-                    obsv_counts[t][i][u] = sum(1 for item in observation_seqs[u][t] if item == i)
+                    observation_counts[t][i][u] = sum(1 for item in observation_seqs[u][t] if item == i)
             for u in range(n_users):
                 total_counts[t][u] = len(observation_seqs[u][t])
 
         alphas, betas, gammas, xis = self.expectation(observation_seqs)
-        # self.maximisation(alphas, scaling_factors, betas, obsv_counts, total_counts)
+
+        self.maximisation(gammas, xis, n_users, T, observation_counts, total_counts, observation_seqs)
 
     def expectation(self, observation_seqs):
         T = len(observation_seqs[0])
@@ -229,20 +316,90 @@ class HMM:
         # calculate gammas
         params = []
         for u in range(len(observation_seqs)):
-            params.append(alphas[u], betas[u])
-        gammas = map(HMM.gamma, params)
+            params.append((alphas[u], betas[u]))
+        gammas = list(map(HMM.gamma, params))
 
         # calculate xis
         params = []
         for u in range(len(observation_seqs)):
             params.append((alphas[u], betas[u], self.A, scaling_factors[u], T, self.n_states, self.a, self.b, self.theta, observation_seqs[u]))
-        xis = map(HMM.xi, params)
+        xis = list(map(HMM.xi, params))
 
         return alphas, betas, gammas, xis
 
-    # TODO non-final signature
-    def maximisation(self, alphas, scaling_factors, betas, observation_counts, total_counts):
-        # M
+    def delta(self, a, b, theta, pi, A):
+        delta = 0
 
-        pass
+        for k in range(self.n_states):
+            delta += abs(a[k] - self.a[k]) + abs(b[k] - self.b[k]) + abs(pi[k] - self.pi[k])
+            for l in range(self.n_states):
+                delta += abs(A[k][l] - self.A[k][l])
+            for i in range(self.n_items):
+                delta += abs(theta[i][k] - self.theta[i][k])
+
+        return delta
+
+    # TODO non-final signature
+    def maximisation(self, gammas, xis, n_users, T, observation_counts, total_counts, observation_seqs):
+        # initial and transition probabilities (HMM model parameters)
+        pi = np.copy(self.pi)
+        A = np.copy(self.A)
+
+        # emission probabilities (multinomial model parameters)
+        theta = np.copy(self.theta)
+
+        # negative binomial model parameters
+        a = np.copy(self.a)
+        b = np.copy(self.b)
+
+
+        """
+        Decomposition of the term in Sahoo et al's paper -> can maximise each likelihood term independently.
+        Maximisation by MAP (maximum-a-posteriori): maximise the likelihood of the posterior.
+        """
+        # maximise likelihood for pi (init probabilities)
+        for i in range(self.n_states):
+            pi[i] = sum(gammas[u][0][i] for u in range(n_users)) + self.ALPHA / self.n_states - 1
+            pi[i] /= (sum(sum(gammas[u][0][k] for k in range(n_users)) for u in range(n_users)) + self.ALPHA - \
+                      self.n_states)
+
+        # maximise likelihood for A (transition probabilities)
+        for i in range(self.n_states):
+            for j in range(self.n_states):
+                xis_ = np.swapaxes(np.swapaxes(xis, 0, 2), 1, 3)
+                gammas_ = np.swapaxes(gammas, 0, 2)
+
+                A[i][j] = xis_[i, j].sum() + self.ALPHA / self.n_states - 1
+                A[i][j] /= gammas_[i][:T-1].sum() + self.ALPHA - self.n_states
+
+        # maximise likelihood for theta (multinomial emission parameters)
+        params = []
+        for i in range(self.n_items):
+            for k in range(self.n_states):
+                params.append((gammas, observation_counts, total_counts, self.ALPHA, self.n_states, T))
+        results = map(HMM.maximise_theta, params)
+        for i, k, theta_ik in results:
+            theta[i][k] = theta_ik
+
+        a, b = HMM.NBD_MLE(a, b, gammas, observation_seqs)
+
+        delta = self.delta(a, b, theta, pi, A)
+
+        # update w/ new values
+        self.a = a
+        self.b = b
+        self.theta = theta
+        self.pi = pi
+        self.A = A
+
+        if delta < 0.001:
+            return True
+        else:
+            return False
+
+
+
+
+
+
 
