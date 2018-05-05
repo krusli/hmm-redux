@@ -14,8 +14,7 @@ class HMM:
         - emission/observation model from latent class memberships
         """
 
-        if not prior_params:
-            prior_params = alpha * np.ones(shape=n_states) / n_states
+        prior_params = alpha * np.ones(shape=n_states) / n_states
 
         # starting probabilities
         self.A = np.random.dirichlet(prior_params)
@@ -26,11 +25,12 @@ class HMM:
             self.pi[i] = np.random.dirichlet(prior_params)
 
         # emission probabilities
-        # NBD (negative binomial distribution) params
-        self.a = np.random(n_states)
-        self.b = np.random(n_states)
+        # NBD (negative binomial distribution) params; NBD models the no of items the user selects
+        self.a = np.random.random(n_states)
+        self.b = np.random.random(n_states)
 
+        # theta (multinomial) models which items the user selects
         self.theta = np.zeros(shape=(n_states, n_items))
         for i in range(n_states):
-            self.theta[i] = np.random(n_items)
+            self.theta[i] = np.random.random(n_items)
             self.theta[i] /= sum(self.theta[i])  # normalise to sum to 1
