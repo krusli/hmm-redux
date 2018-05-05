@@ -271,9 +271,7 @@ class HMM:
         return a, b
 
     def baum_welch(self, observation_seqs, n_iterations=20):
-        # TODO no iteration
         # TODO cache emission probs
-
         # constant values (for M-stage)
         n_users = len(observation_seqs)
         T = len(observation_seqs[0])
@@ -306,8 +304,8 @@ class HMM:
         params = []
         for seq in observation_seqs:
             params.append((self.n_states, self.a, self.b, self.theta, self.pi, self.A, seq))
-        # results = self.pool.map(HMM.forward_backward, params)
-        results = map(HMM.forward_backward, params)
+        results = self.pool.map(HMM.forward_backward, params)
+        # results = map(HMM.forward_backward, params)
 
         alphas = []
         scaling_factors = []
@@ -327,13 +325,15 @@ class HMM:
         params = []
         for u in range(len(observation_seqs)):
             params.append((alphas[u], betas[u]))
-        gammas = list(map(HMM.gamma, params))
+        # gammas = list(map(HMM.gamma, params))
+        gammas = self.pool.map(HMM.gamma, params)
 
         # calculate xis
         params = []
         for u in range(len(observation_seqs)):
             params.append((alphas[u], betas[u], self.A, scaling_factors[u], T, self.n_states, self.a, self.b, self.theta, observation_seqs[u]))
-        xis = list(map(HMM.xi, params))
+        # xis = list(map(HMM.xi, params))
+        xis = self.pool.map(HMM.xi, params)
 
         return alphas, betas, gammas, xis
 
@@ -386,7 +386,8 @@ class HMM:
         for i in range(self.n_items):
             for k in range(self.n_states):
                 params.append((i, k, gammas, observation_counts, total_counts, self.ALPHA, self.n_states, T))
-        results = map(HMM.maximise_theta, params)
+        # results = map(HMM.maximise_theta, params)
+        results = self.pool.map(HMM.maximise_theta, params)
         for i, k, theta_ik in results:
             theta[i][k] = theta_ik
 
@@ -417,7 +418,7 @@ class HMM:
             p_t_plus_1.append(total)
 
         item_rank = defaultdict(float)
-        for i in range(len(self.theta)):  # for each item
+        for i in range(len(self. theta)):  # for each item
             item_rank[i] = -sum(p_t_plus_1[k] * (1 + self.b[k] * self.theta[i][k]) ** (-self.a[k])
                                 for k in range(self.n_states))
 

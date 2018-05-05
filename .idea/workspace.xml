@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9adb1020-3113-424e-a9dd-eaa8d4eff2b1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/hmm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +16,8 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="419" column="32" selection-start-line="419" selection-start-column="32" selection-end-line="419" selection-end-column="32" />
+            <state relative-caret-position="408">
+              <caret line="389" column="58" selection-start-line="389" selection-start-column="58" selection-end-line="389" selection-end-column="58" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
                 <element signature="e#2827#4335#0" />
@@ -52,8 +51,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>NBD_MLE</find>
-      <find>theta =</find>
       <find>update_thet</find>
       <find>theta = np</find>
       <find>theta</find>
@@ -82,6 +79,8 @@
       <find>forward</find>
       <find>u</find>
       <find>item_rank</find>
+      <find>list(map</find>
+      <find>map(</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -236,8 +235,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="419" column="32" selection-start-line="419" selection-start-column="32" selection-end-line="419" selection-end-column="32" />
+        <state relative-caret-position="408">
+          <caret line="389" column="58" selection-start-line="389" selection-start-column="58" selection-end-line="389" selection-end-column="58" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
             <element signature="e#2827#4335#0" />
