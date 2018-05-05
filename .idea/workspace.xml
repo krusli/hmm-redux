@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9adb1020-3113-424e-a9dd-eaa8d4eff2b1" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/hmm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_hmm.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_hmm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,14 +19,24 @@
       <file leaf-file-name="hmm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/hmm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+            <state relative-caret-position="633">
+              <caret line="183" column="22" selection-start-line="183" selection-start-column="22" selection-end-line="183" selection-end-column="22" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
-                <element signature="e#2827#4335#0" />
                 <element signature="e#4448#5054#0" />
                 <element signature="e#5116#5411#0" />
-                <element signature="e#6262#6520#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_hmm.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_hmm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -32,12 +44,22 @@
       </file>
     </leaf>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>self.pool</find>
+      <find>self.pool.map</find>
+      <find>item_counts</find>
+      <find>emissions</find>
+      <find>print(</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/test_hmm.py" />
         <option value="$PROJECT_DIR$/hmm.py" />
       </list>
     </option>
@@ -126,16 +148,24 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/test_hmm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/hmm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="18" column="17" selection-start-line="18" selection-start-column="17" selection-end-line="18" selection-end-column="17" />
+        <state relative-caret-position="633">
+          <caret line="183" column="22" selection-start-line="183" selection-start-column="22" selection-end-line="183" selection-end-column="22" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
-            <element signature="e#2827#4335#0" />
             <element signature="e#4448#5054#0" />
             <element signature="e#5116#5411#0" />
-            <element signature="e#6262#6520#0" />
           </folding>
         </state>
       </provider>

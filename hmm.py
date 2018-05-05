@@ -4,7 +4,7 @@ from scipy.misc import comb
 from scipy import stats
 
 class HMM:
-    def __init__(self, n_items, n_states, pool=None, alpha=100):
+    def __init__(self, n_items, n_states, alpha=100):
         """
         :param n_items: no of items (I) in the dataset
         :param n_states: no of hidden states (K)
@@ -15,8 +15,7 @@ class HMM:
         - transition probability (A) <- Dirichlet prior a1 to aK
         - emission/observation model from latent class memberships
         """
-        if not pool:
-            self.pool = Pool(cpu_count())
+        self.pool = Pool(cpu_count())
 
         prior_params = alpha * np.ones(shape=n_states) / n_states
 
@@ -24,12 +23,12 @@ class HMM:
         self.n_items = n_items
 
         # starting probabilities
-        self.A = np.random.dirichlet(prior_params)
+        self.pi = np.random.dirichlet(prior_params)
 
         # transition probabilities
-        self.pi = np.zeros(shape=(n_states, n_states))
+        self.A = np.zeros(shape=(n_states, n_states))
         for i in range(n_states):
-            self.pi[i] = np.random.dirichlet(prior_params)
+            self.A[i] = np.random.dirichlet(prior_params)
 
         # emission probabilities
         # NBD (negative binomial distribution) params; NBD models the no of items the user selects
@@ -41,6 +40,7 @@ class HMM:
         for i in range(n_states):
             self.theta[i] = np.random.random(n_items)
             self.theta[i] /= sum(self.theta[i])  # normalise to sum to 1
+        self.theta = np.transpose(self.theta)
 
     @staticmethod
     def emission_prob(theta, a, b, k, i):
@@ -50,7 +50,7 @@ class HMM:
         """
         # a[k], b[k]: Gamma shape/scale params => NBD params for the k-th state
         # Gamma dist is conjugate to Poisson; NBD is a Poisson with Gamma mean
-        p = b[k] / (b[k] + 1)  # probability for NBD
+        p_i = b[k] / (b[k] + 1)  # probability for NBD
         x = len(i)  # #(items) in the observation
 
         p_i = np.transpose(theta)[k]  # item probs
@@ -91,10 +91,10 @@ class HMM:
 
         # initialisation
         emissions = np.diag([
-            HMM.emission_prob(theta, a, b, k, observation_seq[t])
+            HMM.emission_prob(theta, a, b, k, observation_seq[0])
             for k in range(n_states)
         ])
-        alphas[0, :] = np.dot(emissions, pi)
+        alphas[0, :] = np.dot(pi, emissions)
 
         # scaling - make the alphas sum to 1 at each step
         scaling_factor = alphas[0, :].sum()
@@ -177,10 +177,11 @@ class HMM:
         params = []
         for seq in observation_seqs:
             params.append((self.n_states, self.a, self.b, self.theta, self.pi, self.A, seq))
-        results = self.pool.map(HMM.forward_backward, params)
+        # results = self.pool.map(HMM.forward_backward, params)
+        results = list(map(HMM.forward_backward, params))
         print(results)
 
-        return
+        return results
 
     def maximisation(self):
         # M
