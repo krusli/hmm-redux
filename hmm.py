@@ -177,7 +177,6 @@ class HMM:
             for k in range(len(gammas[t])):
                 if gammas[t][k] == 0:
                     gammas[t][k] = EPSILON
-            gammas[t] /= gammas[t].sum()  # rescale
         return gammas
 
     @staticmethod
