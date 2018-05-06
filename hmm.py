@@ -6,6 +6,8 @@ import numpy as np
 from scipy.misc import comb
 from scipy import stats, special
 
+from tqdm import tqdm
+
 class HMM:
     def __init__(self, n_items, n_states, ALPHA=100):
         """
@@ -25,6 +27,9 @@ class HMM:
 
         self.n_states = n_states
         self.n_items = n_items
+
+        if ALPHA / n_states < 1 or ALPHA / n_items < 1:
+            raise ValueError('ALPHA must be greater than n_items.')
 
         # starting probabilities
         self.pi = np.random.dirichlet(prior_params)
@@ -198,10 +203,15 @@ class HMM:
             numerator += (gammas_[k][t] * observation_counts[t][i]).sum()
             denominator += (gammas_[k][t] * total_counts[t]).sum()
         numerator += alpha / n_items - 1
-        denominator += alpha - n_items
+        denominator += alpha * n_items - n_items
 
-        assert (numerator / denominator >= 0)
         theta_ik = numerator / denominator
+        # if (theta_ik < 0):
+        #     pprint(gammas)
+        #     pprint(observation_counts)
+        #     pprint(total_counts)
+        #     print(numerator, denominator)
+        assert (theta_ik >= 0)
 
         return i, k, theta_ik
 
@@ -278,25 +288,31 @@ class HMM:
 
         observation_counts = np.zeros(shape=(T, self.n_items, n_users))
         total_counts = np.zeros(shape=(T, n_users))
+
+        deltas = []
+
         for t in range(T):
             for i in range(self.n_items):
                 for u in range(n_users):
-                    observation_counts[t][i][u] = sum(1 for item in observation_seqs[u][t] if item == i)
+                    count = 0
+                    for item in observation_seqs[u][t]:
+                        if item == i:
+                            count += 1
+                    observation_counts[t][i][u] = count
+
+        for t in range(T):
             for u in range(n_users):
                 total_counts[t][u] = len(observation_seqs[u][t])
 
-        for i in range(n_iterations):
-            print('Iteration {}'.format(i+1))
+        for i in tqdm(range(n_iterations)):
             # gets expectations based on the current parameter values
             alphas, betas, gammas, xis = self.expectation(observation_seqs)
 
             # updates parameters (maximises likelihood)
             delta = self.maximisation(gammas, xis, n_users, T, observation_counts, total_counts, observation_seqs)
-
-            print('delta: {}'.format(delta))
-
+            deltas.append(delta)
             if delta < 0.001:
-                break
+                return deltas  # break
 
     def expectation(self, observation_seqs):
         T = len(observation_seqs[0])
