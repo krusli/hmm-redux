@@ -3,6 +3,7 @@ from multiprocessing import Pool, cpu_count
 from collections import defaultdict
 
 import numpy as np
+from numpy.testing import assert_almost_equal
 from scipy.misc import comb
 from scipy import stats, special
 
@@ -76,6 +77,7 @@ class HMM:
 
             return HMM.nbinom(x, a[k], b[k]) * multinomial_term
         else:
+            # NOTE TODO <- not compatible with NBD_MLE
             # if user does not look at any items, probability of looking at 0 items
             return HMM.nbinom(x, a[k], b[k])
 
@@ -165,8 +167,11 @@ class HMM:
 
     @staticmethod
     def gamma(params):
-        alpha, beta = params
-        return alpha * beta
+        """
+        Calculates gamma for a user.
+        """
+        alphas, betas = params
+        return alphas * betas
 
     @staticmethod
     def xi(params):
@@ -267,16 +272,10 @@ class HMM:
             if average_counts != 0:
                 a[k] = 0.5 / (log(average_counts[k]) - average_log_counts[k])
 
+            # print(a)
             for i in range(4):  # NOTE: *should* converge in four iterations
-                # TODO check
-                f = sum(sum(gammas[u][t][k] * (polygamma(0, a[k] + average_counts[k]) - polygamma(0, a[k]) - \
-                      log(average_counts[k]/a[k] + 1)) for t in range(T)) for u in range(n_users))
-                df = sum(sum(gammas[u][t][k] * (polygamma(1, a[k] + average_counts[k]) - polygamma(1, a[k]) - \
-                      1/(average_counts[k] + a[k]) + 1/a[k]) for t in range(t)) for u in range(n_users))
-
-                a[k] = f/df
-
-                assert (a[k] >= 0)
+                a_new_inv = 1/a[k] + (average_log_counts[k] - log(average_counts[k]) + log(a[k]) - polygamma(0, a[k])) / (a[k]**2 * (1/a[k] - polygamma(1, a[k])))
+            assert (a[k] >= 0)
 
         return a, b
 
@@ -387,6 +386,7 @@ class HMM:
             pi[i] = sum(gammas[u][0][i] for u in range(n_users)) + self.ALPHA / self.n_states - 1
             pi[i] /= (sum(sum(gammas[u][0][k] for k in range(self.n_states)) for u in range(n_users)) + self.ALPHA - \
                       self.n_states)
+        pi[i] /= pi[i].sum()  # NOTE as below
 
         # maximise likelihood for A (transition probabilities)
         for i in range(self.n_states):
@@ -396,6 +396,9 @@ class HMM:
 
                 A[i][j] = xis_[i, j].sum() + self.ALPHA / self.n_states - 1
                 A[i][j] /= gammas_[i][:T-1].sum() + self.ALPHA - self.n_states
+
+            # sometimes will not sum to 1 due to numerical errors?
+            A[i] /= A[i].sum()
 
         # maximise likelihood for theta (multinomial emission parameters)
         params = []
@@ -407,8 +410,7 @@ class HMM:
         for i, k, theta_ik in results:
             theta[i][k] = theta_ik
 
-        # TODO BROKEN
-        # a, b = HMM.NBD_MLE(a, b, gammas, observation_seqs)
+        a, b = HMM.NBD_MLE(a, b, gammas, observation_seqs)
 
         delta = self.delta(a, b, theta, pi, A)
 
