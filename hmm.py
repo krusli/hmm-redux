@@ -233,6 +233,7 @@ class HMM:
 
         log = np.log
         polygamma = special.polygamma
+        digamma = special.digamma
 
         T = len(observation_seqs[0])
         for u in range(len(counts)):  # count number of items selected for each user at each time
@@ -255,26 +256,28 @@ class HMM:
             numerator = 0
             denominator = 0
             for u in range(len(counts)):  # for each user
+                # NOTE numerical errors when gammas == 0
                 for t in range(T):
-                    if counts[u][t] == 0:
-                        numerator = 0
-                    else:
-                        numerator += gammas[u][t][k] * (polygamma(0, counts[u][t] + a[k]) + log(b[k] / (b[k] + 1)))
+                    numerator += gammas[u][t][k] * (digamma(counts[u][t] + a[k]) + log(b[k] / (b[k] + 1)))
                     denominator += gammas[u][t][k]
+
+            print(numerator, denominator)
             average_log_counts.append(numerator / denominator)
 
         for k in range(len(a)):
             b[k] = average_counts[k] / a[k]  # Minka 2002 (3)
-            if average_counts != 0:
+            # fast starting point
+            if average_counts[k] > 0:
                 a[k] = 0.5 / (log(average_counts[k]) - average_log_counts[k])
-
-            # starting point
-            if average_counts != 0:
-                a[k] = 0.5 / (log(average_counts[k]) - average_log_counts[k])
+            else:
+                # TODO
+                print('average_counts == 0')
+                return a, b
 
             # print(a)
-            for i in range(4):  # NOTE: *should* converge in four iterations
-                a_new_inv = 1/a[k] + (average_log_counts[k] - log(average_counts[k]) + log(a[k]) - polygamma(0, a[k])) / (a[k]**2 * (1/a[k] - polygamma(1, a[k])))
+            for i in range(4):
+                a_new_inv = 1/a[k] + (average_log_counts[k] - log(average_counts[k]) + log(a[k]) - digamma(a[k])) / \
+                                     (a[k]**2 * (1/a[k] - polygamma(1, a[k])))
             assert (a[k] >= 0)
 
         return a, b
