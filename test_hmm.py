@@ -54,7 +54,3 @@ def test_expectation():
     alphas, betas, gammas, xis = hmm.expectation(observation_seqs)
 
     # TODO STUB
-
-
-def test_log_gamma():
-    assert_almost_equal(HMM.gamma((3, 4)), np.exp(HMM.log_gamma((3, 4))))

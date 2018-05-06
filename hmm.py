@@ -3,7 +3,6 @@ from multiprocessing import Pool, cpu_count
 from collections import defaultdict
 
 import numpy as np
-from numpy.testing import assert_almost_equal
 from scipy.misc import comb
 from scipy import stats, special
 
@@ -170,16 +169,6 @@ class HMM:
         return alpha * beta
 
     @staticmethod
-    def log_gamma(params):
-        alpha, beta = params
-
-        # TODO
-        if alpha is 0 or beta is 0:
-            return -float('inf')
-
-        return np.log(alpha) + np.log(beta)
-
-    @staticmethod
     def xi(params):
         alpha, beta, A, scaling_factors, T, n_states, a, b, theta, observation_seq = params
 
@@ -217,14 +206,15 @@ class HMM:
         denominator += alpha - n_items
 
         theta_ik = numerator / denominator
-        if (theta_ik < 0):
-            # pprint(gammas)
-            # pprint(observation_counts)
-            # pprint(total_counts)
-            print(numerator, denominator)
+        # if (theta_ik < 0):
+        #     pprint(gammas)
+        #     pprint(observation_counts)
+        #     pprint(total_counts)
+        #     print(numerator, denominator)
         assert (theta_ik >= 0)
 
         return i, k, theta_ik
+
 
     @staticmethod
     def NBD_MLE(a, b, gammas, observation_seqs):
@@ -387,17 +377,16 @@ class HMM:
         a = np.copy(self.a)
         b = np.copy(self.b)
 
+
         """
         Decomposition of the term in Sahoo et al's paper -> can maximise each likelihood term independently.
         Maximisation by MAP (maximum-a-posteriori): maximise the likelihood of the posterior.
         """
         # maximise likelihood for pi (init probabilities)
-        gammas_ = np.swapaxes(gammas, 0, 2)  # -> gammas[i][0][u]
         for i in range(self.n_states):
-            pi[i] = gammas_[i][0].sum() + self.ALPHA / self.n_states - 1
-            pi[i] /= (sum(gammas_[k][0].sum() for k in range(self.n_states)) + self.ALPHA - \
+            pi[i] = sum(gammas[u][0][i] for u in range(n_users)) + self.ALPHA / self.n_states - 1
+            pi[i] /= (sum(sum(gammas[u][0][k] for k in range(self.n_states)) for u in range(n_users)) + self.ALPHA - \
                       self.n_states)
-            assert_almost_equal(pi.sum(), 1)
 
         # maximise likelihood for A (transition probabilities)
         for i in range(self.n_states):
@@ -407,8 +396,6 @@ class HMM:
 
                 A[i][j] = xis_[i, j].sum() + self.ALPHA / self.n_states - 1
                 A[i][j] /= gammas_[i][:T-1].sum() + self.ALPHA - self.n_states
-            assert_almost_equal(A[i].sum(), 1)
-
 
         # maximise likelihood for theta (multinomial emission parameters)
         params = []
@@ -419,10 +406,6 @@ class HMM:
         results = self.pool.map(HMM.maximise_theta, params)
         for i, k, theta_ik in results:
             theta[i][k] = theta_ik
-
-        theta_ = np.transpose(theta)
-        for k in theta_:
-            assert_almost_equal(theta_[k].sum(), 1)
 
         # TODO BROKEN
         # a, b = HMM.NBD_MLE(a, b, gammas, observation_seqs)
