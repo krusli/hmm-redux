@@ -171,7 +171,14 @@ class HMM:
         Calculates gamma for a user.
         """
         alphas, betas = params
-        return alphas * betas
+        gammas = alphas * betas
+        EPSILON = 1**(-10)
+        for t in range(len(gammas)):
+            for k in range(len(gammas[t])):
+                if gammas[t][k] == 0:
+                    gammas[t][k] = EPSILON
+            gammas[t] /= gammas[t].sum()  # rescale
+        return gammas
 
     @staticmethod
     def xi(params):
@@ -250,6 +257,9 @@ class HMM:
                     numerator += gammas[u][t][k] * ((counts[u][t] + a[k]) * b[k] / (b[k] + 1))
                     denominator += gammas[u][t][k]  # "number of observations"
             average_counts.append(numerator / denominator)
+            if denominator == 0:
+                print('denominator == 0')
+                return a, b
 
         average_log_counts = []
         for k in range(len(a)):
@@ -261,7 +271,10 @@ class HMM:
                     numerator += gammas[u][t][k] * (digamma(counts[u][t] + a[k]) + log(b[k] / (b[k] + 1)))
                     denominator += gammas[u][t][k]
 
-            print(numerator, denominator)
+            if denominator == 0:
+                print('denominator == 0')
+                b[k] = average_counts[k] / a[k]  # Minka 2002 (3)
+                return a, b
             average_log_counts.append(numerator / denominator)
 
         for k in range(len(a)):
@@ -314,7 +327,8 @@ class HMM:
             delta = self.maximisation(gammas, xis, n_users, T, observation_counts, total_counts, observation_seqs)
             deltas.append(delta)
             if delta < 0.001:
-                return deltas  # break
+                break
+        return deltas  # break
 
     def expectation(self, observation_seqs):
         T = len(observation_seqs[0])
@@ -400,7 +414,7 @@ class HMM:
                 A[i][j] = xis_[i, j].sum() + self.ALPHA / self.n_states - 1
                 A[i][j] /= gammas_[i][:T-1].sum() + self.ALPHA - self.n_states
 
-            # sometimes will not sum to 1 due to numerical errors?
+            # sometimes will not sum to 1 due to floating point inaccuracies
             A[i] /= A[i].sum()
 
         # maximise likelihood for theta (multinomial emission parameters)
