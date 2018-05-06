@@ -203,7 +203,7 @@ class HMM:
             numerator += (gammas_[k][t] * observation_counts[t][i]).sum()
             denominator += (gammas_[k][t] * total_counts[t]).sum()
         numerator += alpha / n_items - 1
-        denominator += alpha * n_items - n_items
+        denominator += alpha - n_items
 
         theta_ik = numerator / denominator
         # if (theta_ik < 0):
