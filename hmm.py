@@ -458,14 +458,14 @@ class HMM:
 
         return sorted(item_rank, key=item_rank.__getitem__, reverse=True)
 
+    def save_params_to_file(self, filename='params.npz'):
+        with open(filename, 'wb') as f:
+            np.savez(f, pi=hmm.pi, A=hmm.A, a=hmm.a, b=hmm.b, theta=hmm.theta)
 
-# if __name__ == "__main__":
-#     hmm = HMM(15, 3, 100)
-#     observation_seqs = [
-#         [[0, 3, 2, 7], [1, 4], [2, 5, 6], [0, 0, 2, 3]],  # user 1, only tech
-#         [[0, 1, 2, 8, 9, 2], [3, 1, 4, 1, 5, 9], [8, 10, 12, 7], [1, 2, 1, 1]], # user 2, mixture of tech and fashion. Heavy user.
-#         [[0, 1], [2], [3], []],  # user 3, light user, mainly tech
-#         [[13], [14], [], [0, 1]],  # user 4, power tools, also browsed tech
-#         [[8, 9, 10], [9, 10, 11], [10, 11, 12], [8, 8, 9]]  # only fashion
-#     ]
-#     hmm.baum_welch(observation_seqs)
+    def load_params_from_file(self, filename='params.npz'):
+        file = np.load(filename)
+        self.pi = file['pi']
+        self.A = file['A']
+        self.a = file['a']
+        self.b = file['b']
+        self.theta = file['theta']
