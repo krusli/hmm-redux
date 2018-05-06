@@ -172,7 +172,7 @@ class HMM:
         """
         alphas, betas = params
         gammas = alphas * betas
-        EPSILON = 1**(-10)
+        EPSILON = 10**(-10)
         for t in range(len(gammas)):
             for k in range(len(gammas[t])):
                 if gammas[t][k] == 0:

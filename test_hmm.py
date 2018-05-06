@@ -45,6 +45,24 @@ def test_gamma():
 
     assert (gamma == gamma_hmm).all()
 
+
+def test_gamma_0_in_alpha_or_beta():
+    hmm = HMM(15, 3, 100)
+
+    alphas = np.array([[ 0,  0.18494247,  0.55464742],
+       [ 0.81832943,  0.09157791,  0.09009266],
+       [ 0.62316769,  0.18980412,  0.18702818],
+       [ 0.42329472,  0.28790271,  0.28880257]])
+
+    betas = np.array([[ 2.46145618,  0.27263977,  0.26822218],
+        [ 1.85320493,  0.57133421,  0.56296995],
+        [ 1.26246349,  0.86630114,  0.86899945],
+        [ 1.        ,  1.        ,  1.        ]])
+
+    gamma_hmm = hmm.gamma((alphas, betas))
+    assert not np.isin(0, gamma_hmm)
+
+
 def test_expectation():
     hmm = HMM(15, 3, 100)
 

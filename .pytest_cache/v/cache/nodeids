@@ -2,5 +2,6 @@
   "test_hmm.py::test_init",
   "test_hmm.py::test_NBD",
   "test_hmm.py::test_gamma",
+  "test_hmm.py::test_gamma_0_in_alpha_or_beta",
   "test_hmm.py::test_expectation"
 ]
